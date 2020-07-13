@@ -2,6 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+class QAction;
+class QLabel;
+class FindDialog;
+class Spreadsheet;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -9,20 +13,19 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void createMenus();
 
 protected:
-    void closeEvent(QCloseEvent *event);
-
-private slots:
-    void newFile();
-    void open();
-    bool save();
-    bool saveAs();
-    void find();
-    void goToCell();
-    void sort();
-    void about();
+    void closeEvent(QCloseEvent *event) override;
+private:
+    void        createContextMenu();
+    void        createToolBar();
+    void        createActions();
+    void        createMenus();
+    void        createStatusBar();
+    QAction     *fileAction;
+    QToolBar    *fileToolBar;
+    QMenu       *fileMenu;
+    QLabel      *location;
 };
 
 #endif // MAINWINDOW_H

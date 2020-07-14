@@ -15,7 +15,7 @@ public:
     ~MainWindow();
 
 protected:
-    void closeEvent(QCloseEvent *event) override;
+
 private:
     void        createContextMenu();
     void        createToolBar();

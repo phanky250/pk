@@ -10,6 +10,6 @@ void ItemList::itemClicked(QListWidgetItem *item) {
     QMessageBox::about(this, tr("phanky"), item->text());
 }
 void ItemList::addItem() {
-    QListWidget::addItem("C++");
-    QListWidget::insertItem(0, "Java");
+    QListWidget::insertItem(0, "C++");
+    QListWidget::insertItem(1, "Java");
 }

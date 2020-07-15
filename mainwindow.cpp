@@ -1,28 +1,29 @@
 #include "mainwindow.h"
 #include "itemlist.h"
+#include "editor.h"
 #include <QtWidgets>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
 
-    ItemList *leftWidget = new ItemList;
-    leftWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    leftPanel = new ItemList;
+    leftPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QFrame *vFrame = new QFrame;
     vFrame->setFrameShape(QFrame::VLine);
 
-    QWidget *rightWidget = new QWidget;
-    rightWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    Editor *editorPanel = new Editor;
+    editorPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(leftWidget);
+    layout->addWidget(leftPanel);
     layout->addWidget(vFrame);
-    layout->addWidget(rightWidget);
+    layout->addWidget(editorPanel);
 
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
     setCentralWidget(widget);
     setWindowTitle("phanky");
-    resize(600, 400);
+    resize(600, 600);
 
     createActions();
     createMenus();

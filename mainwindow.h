@@ -6,7 +6,7 @@ class QAction;
 class QLabel;
 class FindDialog;
 class Spreadsheet;
-
+class ItemList;
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -26,6 +26,7 @@ private:
     QToolBar    *fileToolBar;
     QMenu       *fileMenu;
     QLabel      *location;
+    ItemList 	*leftPanel;
 };
 
 #endif // MAINWINDOW_H

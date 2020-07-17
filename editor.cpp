@@ -1,43 +1,56 @@
+#include <QtGui>
+
 #include "editor.h"
 #include "resource.h"
-#include <QtGui>
 Editor::Editor(QWidget *parent) : QWidget(parent) {
-    image = QImage(300, 300, QImage::Format_ARGB32);
-    image.fill(qRgba(0, 0, 0, 0));
+    //  image = QImage(320, 320, QImage::Format_ARGB32);
+    //image.fill(qRgba(155, 55, 25, 255));
+    image = QImage("mouse.png");
 }
-void Editor::setImage(const QImage & newImage) {
-    if (newImage != image) {
-        image = newImage.convertToFormat(QImage::Format_ARGB32);
-        update();
-        updateGeometry();
+
+
+void Editor::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton) {
+        setImagePixel(event->pos(), true);
+    } else if (event->button() == Qt::RightButton) {
+        setImagePixel(event->pos(), false);
     }
 }
-QRect Editor::pixelRect(int i, int j) const {
-    return QRect(i, j, editor::rectWidth, editor::rectHeight);
 
+void Editor::mouseMoveEvent(QMouseEvent *event) {
+    if (event->buttons() & Qt::LeftButton) {
+        setImagePixel(event->pos(), true);
+    } else if (event->buttons() & Qt::RightButton) {
+        setImagePixel(event->pos(), false);
+    }
 }
-void Editor::paintEvent(QPaintEvent *event) {
+
+void Editor::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.setPen(palette().foreground().color());
 
-    for (int i = 0; i <= image.width(); i += 10) {
-        painter.drawLine(i, 0,
-                         i, image.height());
+    for (int i = 0; i < image.width(); ++i) {
+        for (int j = 0; j < image.height(); ++j) {
+            QColor color = QColor::fromRgba(image.pixel(i, j));
+            painter.fillRect(QRect(i, j, 1, 1), color);
+
+        }
     }
 
-//    for (int i = 0; i < image.width(); i += 10) {
-//        for (int j = 0; j < image.height(); j += 10) {
-//            QRect rect = pixelRect(i, j);
+}
 
-//            if (!event->region().intersect(rect).isEmpty()) {
-//                QColor color = QColor::fromRgba(image.pixel(i, j));
+void Editor::setImagePixel(const QPoint &pos, bool wht) {
+    int i = pos.x();
+    int j = pos.y();
 
-//                if (color.alpha() < 255)
-//                    painter.fillRect(rect, Qt::white);
+    if (image.rect().contains(i, j)) {
+        if (!wht) {
+            image.setPixel(i, j, qRgba(0, 0, 0, 255));
+        } else {
+            image.setPixel(i, j, qRgba(255, 255, 255, 255));
+        }
 
-//                painter.fillRect(rect, color);
-//            }
-//        }
-//    }
+        update();
+    }
 }
 

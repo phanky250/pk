@@ -2,8 +2,8 @@
 #define RESOURCE_H
 
 enum editor : unsigned int {
-    rectWidth = 10,
-    rectHeight = 10
+    Width = 9,
+    Height = 9
 };
 
 #endif // RESOURCE_H

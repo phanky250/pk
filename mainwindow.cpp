@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     createActions();
     createMenus();
-    createContextMenu();
+    //createContextMenu();
     createToolBar();
     createStatusBar();
 

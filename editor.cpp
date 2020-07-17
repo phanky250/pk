@@ -1,14 +1,45 @@
 #include <QtGui>
 
 #include "editor.h"
-#include "resource.h"
 Editor::Editor(QWidget *parent) : QWidget(parent) {
-    //  image = QImage(320, 320, QImage::Format_ARGB32);
-    //image.fill(qRgba(155, 55, 25, 255));
-    image = QImage("mouse.png");
+    setBackgroundRole(QPalette::Dark);
+    setAutoFillBackground(true);
+    setFocusPolicy(Qt::StrongFocus);
+    zoomInButton = new QToolButton(this);
+    zoomOutButton = new QToolButton(this);
+    connect(zoomInButton, SIGNAL(clicked()), this, SLOT(zoomIn()));
+    connect(zoomOutButton, SIGNAL(clicked()), this, SLOT(zoomOut()));
+    setAxisSetting(AxisSetting());
 }
 
+void Editor::setAxisSetting(const AxisSetting &setting) {
+    zoomStack.clear();
+    zoomStack.append(setting);
+    curZoom = 0;
+    zoomInButton->hide();
+    zoomOutButton->hide();
+    refreshPixmap();
+}
 
+void Editor::zoomIn() {
+    if (curZoom < zoomStack.count() - 1) {
+        ++curZoom;
+        zoomInButton->setEnabled(curZoom < zoomStack.count() - 1);
+        zoomOutButton->setEnabled(true);
+        zoomOutButton->show();
+        refreshPixmap();
+    }
+}
+
+void Editor::zoomOut() {
+    if (curZoom > 0) {
+        --curZoom;
+        zoomOutButton->setEnabled(curZoom > 0);
+        zoomInButton->setEnabled(true);
+        zoomInButton->show();
+        refreshPixmap();
+    }
+}
 void Editor::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         setImagePixel(event->pos(), true);
@@ -29,28 +60,7 @@ void Editor::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.setPen(palette().foreground().color());
 
-    for (int i = 0; i < image.width(); ++i) {
-        for (int j = 0; j < image.height(); ++j) {
-            QColor color = QColor::fromRgba(image.pixel(i, j));
-            painter.fillRect(QRect(i, j, 1, 1), color);
-
-        }
-    }
 
 }
 
-void Editor::setImagePixel(const QPoint &pos, bool wht) {
-    int i = pos.x();
-    int j = pos.y();
-
-    if (image.rect().contains(i, j)) {
-        if (!wht) {
-            image.setPixel(i, j, qRgba(0, 0, 0, 255));
-        } else {
-            image.setPixel(i, j, qRgba(255, 255, 255, 255));
-        }
-
-        update();
-    }
-}
 

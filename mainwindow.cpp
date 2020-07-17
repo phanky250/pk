@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
 
     leftPanel = new ItemList;
-    leftPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // leftPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QFrame *vFrame = new QFrame;
     vFrame->setFrameShape(QFrame::VLine);

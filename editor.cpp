@@ -1,6 +1,7 @@
 #include <QtGui>
-
+#include <QStylePainter>
 #include "editor.h"
+
 Editor::Editor(QWidget *parent) : QWidget(parent) {
     setBackgroundRole(QPalette::Dark);
     setAutoFillBackground(true);
@@ -41,26 +42,57 @@ void Editor::zoomOut() {
     }
 }
 void Editor::mousePressEvent(QMouseEvent *event) {
+    QRect rect(0, 0, width(), height());
+
     if (event->button() == Qt::LeftButton) {
-        setImagePixel(event->pos(), true);
-    } else if (event->button() == Qt::RightButton) {
-        setImagePixel(event->pos(), false);
+        rubberBandIsShown = true;
+        rubberBandRect.setTopLeft(event->pos());
+        rubberBandRect.setBottomRight(event->pos());
+        updateRubberBandRegion();
+        setCursor(Qt::CrossCursor);
     }
 }
 
 void Editor::mouseMoveEvent(QMouseEvent *event) {
-    if (event->buttons() & Qt::LeftButton) {
-        setImagePixel(event->pos(), true);
-    } else if (event->buttons() & Qt::RightButton) {
-        setImagePixel(event->pos(), false);
+    if (rubberBandIsShown) {
+        rubberBandRect.setBottomRight(event->pos());
+        updateRubberBandRegion();
     }
 }
 
-void Editor::paintEvent(QPaintEvent *) {
-    QPainter painter(this);
-    painter.setPen(palette().foreground().color());
+void Editor::mouseReleaseEvent(QMouseEvent *event) {
+    if ((event->button() == Qt::LeftButton) && rubberBandIsShown) {
+        rubberBandIsShown = false;
+        updateRubberBandRegion();
+        unsetCursor();
+        QRect rect = rubberBandRect.normalized();
 
+        if (rect.width() < 4 || rect.height() < 4)
+            return;
+    }
+}
+void Editor::paintEvent(QPaintEvent *) {
+    QStylePainter painter(this);
+    painter.drawPixmap(0, 0, pixmap);
+
+    if (rubberBandIsShown) {
+        painter.setPen(palette().light().color());
+        painter.drawRect(rubberBandRect.normalized());
+    }
 
 }
 
+void Editor::resizeEvent(QResizeEvent *) {
+    int x = width() - (zoomInButton->width() + zoomOutButton->width() + 10);
+    zoomInButton->move(x, 5);
+    zoomOutButton->move(x + zoomInButton->width() + 5, 5);
+    refreshPixmap();
+}
 
+void Editor::updateRubberBandRegion() {
+    update();
+}
+
+void Editor::refreshPixmap() {
+
+}
